@@ -7,12 +7,30 @@ from datetime import datetime
 from cybox.common import Time
 
 from stix.incident import Incident,AffectedAsset
-from stix.incident import Time as incidentTime # is a different type of object
+from stix.incident import Time as incidentTime # different type than common:Time
 
 from stix.common import InformationSource
 from stix.common import Confidence
 from stix.common import Identity
 
+from stix.data_marking import Marking, MarkingSpecification
+from stix.extensions.marking.simple_marking import SimpleMarkingStructure
+
+'''
+    required fields:
+        - when did it happen?
+        - What was stolen or disrupted? type of asset as AssetTypeVocab
+        - how sure are you? as confidence (low, med, high)
+        - do you want to share with other affected organizations? (default to sensitive handling - not shared out)
+        - reporter name as Reporter 
+        - description as prose
+        - organization name as Victim
+
+    un-used fields
+        - "nonpublicdata" (if they're reporting it, was clearly important)
+        - LossEstimation (not known at the time of report in 99% of cases)
+        - AttributedActors (never known)
+'''
 # setup stix document
 stix_package = STIXPackage()
 stix_header = STIXHeader()
@@ -20,6 +38,13 @@ stix_header = STIXHeader()
 stix_header.description = "Breach report for $ORG"
 stix_header.add_package_intent ("Incident")
 
+# TODO doesn't really work Add handling requirements
+mark = SimpleMarkingStructure()
+mark.statement = "Sensitive"
+stix_header.handling = Marking(MarkingSpecification().marking_structures.append(mark))
+
+
+# stamp with creator
 stix_header.information_source = InformationSource()
 stix_header.information_source.description = "Person who reported the breach"
 
@@ -31,7 +56,7 @@ stix_header.information_source.identity.name = "Gavin McDodgeson, P.I."
 
 stix_package.stix_header = stix_header
 
-# create incident record
+# add incident and confidence
 breach = Incident()
 breach.description = "Sultry yet hard-boiled account of what happened"
 breach.confidence = Confidence("High") 
@@ -49,23 +74,11 @@ jewels.description = "Priceless intellectual property" # how the victim describe
 breach.add_affected_asset (jewels) 
 breach.add_victim ("$ORG - LLC in the caymans")
 
+
 stix_package.add_incident(breach)
 
 
-'''
-    required fields:
-        - when did it happen?
-        - What was stolen or disrupted? type of asset as AssetTypeVocab
-        - how sure are you? as confidence (low, med, high)
-        - do you want to share with other affected organizations? (default sensitive handling - only submitee knows it)
-        - reporter name as Reporter 
-        - description as prose
-        - organization name as Victim
 
-    un-used fields
-        - "nonpublicdata" (if they're reporting it, was clearly important)
-        - LossEstimation (not known at the time of report in 99% of cases)
-        - AttributedActors (never known)
-'''
+# Finalize and emit STIX
 
 print stix_package.to_xml() 
