@@ -38,10 +38,12 @@ stix_header = STIXHeader()
 stix_header.description = "Breach report for $ORG"
 stix_header.add_package_intent ("Incident")
 
-# TODO doesn't really work Add handling requirements
+# Add handling requirements
 mark = SimpleMarkingStructure()
 mark.statement = "Sensitive"
-stix_header.handling = Marking(MarkingSpecification().marking_structures.append(mark))
+mark_spec = MarkingSpecification()
+mark_spec.marking_structures.append(mark)
+stix_header.handling = Marking(mark_spec)
 
 
 # stamp with creator
