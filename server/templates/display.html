@@ -4,6 +4,9 @@
   <h1>Looks we submitted with {{status}}!</h1>
 {% else %}
   <h1>Please input form fields</h1>
+<!--TODO build notional dropdowns and stuff for page UI-->
+    <form method="POST" action="/breach/new" >
+Submitter: <input type="text" name="user">
+    <input type="submit" value="Submit">
+</form>
 {% endif %}
-
-# TODO add jinja2 form fields
