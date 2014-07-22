@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 
-from flask import Flask, request, url_for, render_template, g
+from flask import Flask, request, url_for, render_template, g, abort # 'g' is a magical database thingie
 from sqlite3 import dbapi2 as sqlite3
 
 from stix.core import STIXPackage
@@ -39,6 +39,26 @@ def get_db():
         g.sqlite_db = connect_db()
     return g.sqlite_db
 
+def insert_db(table, fields=(), values=()):
+    # g.db is the database connection
+    db = get_db()
+    cur = db.cursor()
+    query = 'INSERT INTO %s (%s) VALUES (%s)' % (
+        table,
+        ', '.join(fields),
+        ', '.join(['?'] * len(values))
+    )
+    cur.execute(query, values)
+    db.commit()
+    id = cur.lastrowid
+    cur.close()
+    return id
+
+def query_db(query, args=(), one=False):
+    cur = get_db().execute(query, args)
+    rv = cur.fetchall()
+    cur.close()
+    return (rv[0] if rv else None) if one else rv
 
 @app.teardown_appcontext
 def close_db(error):
@@ -49,17 +69,13 @@ def close_db(error):
 # ----- APPLICATION LOGIC -----
 
 def store_breach():
-    db = get_db()
-    print request.form['submitter']
-# TODO use sqlalchemy instead with a db.Model to handle uniq IDs
-    query = 'INSERT into breaches values (?,?)'
-    db.execute(query, (1337, request.form['submitter']))
-    db.commit()
+    rowid = insert_db("breaches", ("submitter",), (request.form['submitter'],)) #trailing commas for tuples
 
+    # TODO add error checking and return 400 if so
+        # return None from this function if was error
     # TODO build URL for the breach - find_url = url_for ('breach', breach_id=new_id )
-    # return tuple or dict for id, url, status
-    result = "success" 
-    return result
+    # return tuple for id, url 
+    return rowid
 
 # ----- URL ROUTING -----
 @app.route('/about')
@@ -75,8 +91,9 @@ def list_breach():
 def add_breach():
     # present input form or parse incoming POST data
     if request.method == 'POST':
-        status = store_breach()
-        return render_template("display.html",status=status)
+        breach_id = store_breach()
+        print breach_id
+        return render_template("display.html",status="success",breach_id=breach_id)
     
     return render_template("display.html")
 
@@ -86,9 +103,16 @@ def get_breach(breach_id):
 
 @app.route('/breach/<int:breach_id>/stix')
 def produce_stix(breach_id):
-    # TODO query DB for ID and pass to func
-    pkg = GenerateIncident.build_stix(breach_id)
-    return pkg.to_xml()
+    db = get_db()
+    result = query_db('select * from breaches where id = ?',
+                [request.form['breach_id']], one=True)
+    # TODO why no result for valid id query
+
+    if result is None:
+        abort(400) # kick error if no results
+    else:
+        pkg = GenerateIncident.build_stix(submitter)
+        return pkg.to_xml()
 
 if __name__ == '__main__':
 # XXX add (host=$myip) to serve online
