@@ -1,19 +1,18 @@
 #!/usr/bin/env python
 
+import os
 from flask import Flask, request, url_for, render_template, g, abort # 'g' is a magical database thingie
 from sqlite3 import dbapi2 as sqlite3
+from sqlite3 import IntegrityError
 
 from stix.core import STIXPackage
 
-import os
 import GenerateIncident 
 
 app = Flask(__name__)
 app.config.update(dict(
     DATABASE=os.path.join(app.root_path, 'mockingjay.db'),
     DEBUG=True))
-
-# DOC - must run python -> import and init_db() to setup DB initially
 
 # ----- DATABASE CODE -----
 def connect_db():
@@ -68,9 +67,19 @@ def close_db(error):
 # ----- APPLICATION LOGIC -----
 
 def store_breach():
-    breach_id = insert_db("breaches", ("submitter",), (request.form['submitter'],)) #trailing commas for tuples
-
-    # will be None if error
+    try:
+        breach_id = insert_db("breaches", ("submitter",'description','asset','sensitive','organization','confidence')
+        , (
+          request.form['submitter']
+        , request.form['description']
+        , request.form['asset']
+        , request.form['sensitive']
+        , request.form['organization']
+        , request.form['confidence']
+        ))
+    except IntegrityError:
+        breach_id = None
+        
     return breach_id
 
 # ----- URL ROUTING -----
@@ -83,12 +92,6 @@ def landing():
 def list_breach():
     return "show all breaches"
 
-@app.route('/breach/<int:breach_id>')
-def get_breach(breach_id):
-# TODO gen link to stix
-# TODO show data from db
-    return "details on a given breach " + str(breach_id)
-
 @app.route('/breach/new', methods=['GET','POST'])
 def add_breach():
     # present input form or parse incoming POST data
@@ -97,7 +100,7 @@ def add_breach():
         if breach_id is None:
             abort(400)
         else:
-            return render_template("display.html",status="success",breach_id=breach_id)
+            return render_template("display.html",breach_id=breach_id)
     
     return render_template("display.html")
 
@@ -110,8 +113,7 @@ def produce_stix(breach_id):
     if result is None:
         abort(400) # kick error if no results
     else:
-    # TODO pass dict of result to build_stix and ref each one there
-        pkg = GenerateIncident.build_stix(result['submitter'])
+        pkg = GenerateIncident.build_stix(result)
         return pkg.to_xml()
 
 if __name__ == '__main__':
