@@ -40,7 +40,6 @@ def get_db():
     return g.sqlite_db
 
 def insert_db(table, fields=(), values=()):
-    # g.db is the database connection
     db = get_db()
     cur = db.cursor()
     query = 'INSERT INTO %s (%s) VALUES (%s)' % (
@@ -69,13 +68,10 @@ def close_db(error):
 # ----- APPLICATION LOGIC -----
 
 def store_breach():
-    rowid = insert_db("breaches", ("submitter",), (request.form['submitter'],)) #trailing commas for tuples
+    breach_id = insert_db("breaches", ("submitter",), (request.form['submitter'],)) #trailing commas for tuples
 
-    # TODO add error checking and return 400 if so
-        # return None from this function if was error
-    # TODO build URL for the breach - find_url = url_for ('breach', breach_id=new_id )
-    # return tuple for id, url 
-    return rowid
+    # will be None if error
+    return breach_id
 
 # ----- URL ROUTING -----
 @app.route('/about')
@@ -87,31 +83,35 @@ def landing():
 def list_breach():
     return "show all breaches"
 
+@app.route('/breach/<int:breach_id>')
+def get_breach(breach_id):
+# TODO gen link to stix
+# TODO show data from db
+    return "details on a given breach " + str(breach_id)
+
 @app.route('/breach/new', methods=['GET','POST'])
 def add_breach():
     # present input form or parse incoming POST data
     if request.method == 'POST':
         breach_id = store_breach()
-        print breach_id
-        return render_template("display.html",status="success",breach_id=breach_id)
+        if breach_id is None:
+            abort(400)
+        else:
+            return render_template("display.html",status="success",breach_id=breach_id)
     
     return render_template("display.html")
 
-@app.route('/breach/<int:breach_id>')
-def get_breach(breach_id):
-    return "details on a given breach " + str(breach_id)
 
 @app.route('/breach/<int:breach_id>/stix')
 def produce_stix(breach_id):
-    db = get_db()
     result = query_db('select * from breaches where id = ?',
-                [request.form['breach_id']], one=True)
-    # TODO why no result for valid id query
+                [breach_id], one=True)
 
     if result is None:
         abort(400) # kick error if no results
     else:
-        pkg = GenerateIncident.build_stix(submitter)
+    # TODO pass dict of result to build_stix and ref each one there
+        pkg = GenerateIncident.build_stix(result['submitter'])
         return pkg.to_xml()
 
 if __name__ == '__main__':

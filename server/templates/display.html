@@ -5,7 +5,7 @@
 
 {% else %}
   <h1>Please input form fields</h1>
-<!--TODO build notional dropdowns and stuff for page UI-->
+<!--TODO refactor to handle display breach / solicit form / show results of insert -->
     <form method="POST" action="/breach/new" >
 Submitter: <input type="text" name="user">
     <input type="submit" value="Submit">
@@ -13,6 +13,6 @@ Submitter: <input type="text" name="user">
 {% endif %}
 
 {% if breach_id %}
-  <h1>Your breach has been anointed as number {{breach_id}}</h1>
+  <h1>Stored at location: {{url_for('get_breach', breach_id=breach_id )}} </h1>
 {% endif %}
 
