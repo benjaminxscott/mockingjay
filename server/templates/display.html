@@ -1,18 +1,13 @@
 <!doctype html>
 <title>Breach Submission Page</title>
-{% if status %}
-  <h1>Looks we submitted with {{status}}!</h1>
-
-{% else %}
   <h1>Please input form fields</h1>
-<!--TODO refactor to handle display breach / solicit form / show results of insert -->
+<!--TODO refactor to solicit form input / show results of insert attempt -->
     <form method="POST" action="/breach/new" >
 Submitter: <input type="text" name="user">
     <input type="submit" value="Submit">
 </form>
-{% endif %}
 
 {% if breach_id %}
-  <h1>Stored at location: {{url_for('get_breach', breach_id=breach_id )}} </h1>
+  <h1>Here's the STIX: {{url_for('produce_stix', breach_id=breach_id )}} </h1>
 {% endif %}
 

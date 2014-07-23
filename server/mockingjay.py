@@ -68,14 +68,15 @@ def close_db(error):
 
 def store_breach():
     try:
-        breach_id = insert_db("breaches", ("submitter",'description','asset','sensitive','organization','confidence')
+        breach_id = insert_db("breaches", ("submitter",'description','asset','sensitive','organization','confidence','timestamp')
         , (
-          request.form['submitter']
-        , request.form['description']
-        , request.form['asset']
-        , request.form['sensitive']
-        , request.form['organization']
-        , request.form['confidence']
+          request.form['submitter'] # who is posting this - text
+        , request.form['description'] # what happened - text
+        , request.form['asset'] # what did they take - text
+        , request.form['sensitive'] # is it secretive - boolean
+        , request.form['organization'] # who are they - text 
+        , request.form['confidence'] # how sure are they - high/med/low/unknown
+        , request.form['timestamp'] # when they submitted it - Y/m/d
         ))
     except IntegrityError:
         breach_id = None
