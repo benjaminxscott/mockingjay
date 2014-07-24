@@ -15,12 +15,33 @@
 
 <form method="POST" action="/breach/new" >
 <p>
-What's your name?: <input type="text" name="submitter" required> </input>
+What's your name? <input type="text" name="submitter" required> </input>
 </p>
 
 <p>
-How would you describe what happened?: <input type="text" name="description" required> </input>
+How would you describe what happened? <input type="text" name="description" required> </input>
 </p>
+
+<p>
+What kind of damage did it cause?
+ <select name="damage">
+<option value="Brand or Image Degradation">The victim looked dumb </option>
+<option value="Loss of Competitive Advantage">They lost business to others</option>
+<option value="Data Breach or Compromise" selected> Data was stolen</option>
+<option value="Regulatory, Compliance or Legal Impact">They might get sued</option>
+<option value="Financial Loss"> They lost money</option>
+<option value="Degradation of Service"> Their servers were down</option>
+ </select>
+</p>
+
+<p>
+Who did it happen to?<input type="text" name="organization"required>
+</p>
+
+<p> When did it happen? 
+<input type="text" name="timestamp" title="YYYY-MM-DD" required pattern="\d{4}-\d{2}-\d{2}"> </input>
+</p>
+
 
 <p>
 How sure are you?
@@ -34,24 +55,10 @@ How sure are you?
 
 <p>
  Is this information sensitive?
-<input type="checkbox" name="sensitive" value="Yes" checked >
+<input type="checkbox" name="sensitive" value="True" checked >
  </input>
 </p>
 
-<p>
-Who did it happen to?<input type="text" name="organization"required>
-</p>
-
-<p> When did it happen? 
-<input type="text" name="timestamp" title="YYYY-MM-DD" required pattern="\d{4}-\d{2}-\d{2}"> </input>
-</p>
-
-<p>
-How will this affect you?
- <select name="damage">
-<option value="Brand or Image Degradation">We lost face </option>
- </select>
-</p>
 
 </br>
     <input type="submit" value="Submit">
