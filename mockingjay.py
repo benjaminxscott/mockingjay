@@ -67,6 +67,8 @@ def close_db(error):
 # ----- APPLICATION LOGIC -----
 
 def store_breach():
+    if request.form['sensitive'] == "True":
+        print "ghosts"
 
     try:
         breach_id = insert_db("breaches", ("submitter",'description','damage','sensitive','organization','confidence','timestamp')
