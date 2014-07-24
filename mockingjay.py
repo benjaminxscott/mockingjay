@@ -6,13 +6,13 @@ from sqlite3 import dbapi2 as sqlite3
 from sqlite3 import IntegrityError
 
 from stix.core import STIXPackage
-
 import GenerateIncident 
 
 app = Flask(__name__)
 app.config.update(dict(
     DATABASE=os.path.join(app.root_path, 'mockingjay.db'),
-    DEBUG=True))
+    SERVER_NAME="dstar.kd.io"
+    ))
 
 # ----- DATABASE CODE -----
 def connect_db():
@@ -67,6 +67,7 @@ def close_db(error):
 # ----- APPLICATION LOGIC -----
 
 def store_breach():
+
     try:
         breach_id = insert_db("breaches", ("submitter",'description','asset','sensitive','organization','confidence','timestamp')
         , (
@@ -80,7 +81,7 @@ def store_breach():
         ))
     except IntegrityError:
         breach_id = None
-        
+
     return breach_id
 
 # ----- URL ROUTING -----
@@ -118,5 +119,5 @@ def produce_stix(breach_id):
         return pkg.to_xml()
 
 if __name__ == '__main__':
-# XXX add (host=$myip) to serve online
-    app.run()
+# serve online
+   app.run(host='0.0.0.0', port=80)
