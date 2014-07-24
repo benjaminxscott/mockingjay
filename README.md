@@ -24,7 +24,7 @@ Create a new incident by filling form fields at:
 
 This endpoint accepts POST data as in:
 
-`curl $server/breaches/new --data "submitter=MandiCorp&confidence=Low&description=Real Bad&asset=All Teh Secrets!&sensitive=False&organization=Jeffcorp"`
+`curl $server/breaches/new --data "submitter=MandiCorp&confidence=Low&description=Real Bad&asset=All Teh Secrets!&sensitive=False&organization=Jeffcorp&timestamp=2012-01-01"`
 
 **note:** An HTTP 400 error is returned for invalid submissions
 
