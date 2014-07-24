@@ -1,13 +1,61 @@
-<!doctype html>
+<!DOCTYPE html>
 <title>Breach Submission Page</title>
-  <h1>Please input form fields</h1>
-<!--TODO refactor to solicit form input / show results of insert attempt -->
-    <form method="POST" action="/breach/new" >
-Submitter: <input type="text" name="user">
+<!--TODO use CSS because come on -->
+
+{% if breach_id %}
+<h1>Thanks for your submission!
+
+<p><a href = {{url_for('produce_stix', breach_id=breach_id ,_external = True)}} > See the STIX version here</a> </p>
+
+</h1>
+
+{% else %}
+
+<h2> Please describe the incident <h2>
+
+<form method="POST" action="/breach/new" >
+<p>
+What's your name?: <input type="text" name="submitter" required> </input>
+</p>
+
+<p>
+How would you describe what happened?: <input type="text" name="description" required> </input>
+</p>
+
+<p>
+How sure are you?
+ <select name="confidence">
+<option value=Unknown>It's just a rumor</option>
+<option value=High>Completely<option>
+<option selected value=Medium>Pretty sure</option>
+<option value=Low>Not really</option>
+ </select>
+</p>
+
+<p>
+ Is this information sensitive?
+<input type="checkbox" name="sensitive" value="Yes" checked >
+ </input>
+</p>
+
+<p>
+Who did it happen to?<input type="text" name="organization"required>
+</p>
+
+<p> When did it happen? 
+<input type="text" name="timestamp" title="YYYY-MM-DD" required pattern="\d{4}-\d{2}-\d{2}"> </input>
+</p>
+
+<p>
+How will this affect you?
+ <select name="damage">
+<option value="Brand or Image Degradation">We lost face </option>
+ </select>
+</p>
+
+</br>
     <input type="submit" value="Submit">
 </form>
 
-{% if breach_id %}
-  <h1>Here's the STIX: {{url_for('produce_stix', breach_id=breach_id )}} </h1>
-{% endif %}
 
+{% endif %}
