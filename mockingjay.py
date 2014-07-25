@@ -10,8 +10,7 @@ import GenerateIncident
 
 app = Flask(__name__)
 app.config.update(dict(
-    DATABASE=os.path.join(app.root_path, 'mockingjay.db'),
-    SERVER_NAME="dstar.kd.io"
+    DATABASE=os.path.join(app.root_path, 'mockingjay.db')
     ))
 
 # ----- DATABASE CODE -----
@@ -121,5 +120,4 @@ def produce_stix(breach_id):
         return pkg.to_xml()
 
 if __name__ == '__main__':
-# serve online
-   app.run(host='0.0.0.0', port=80)
+   app.run(host='0.0.0.0', port=8080)
