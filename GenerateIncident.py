@@ -38,7 +38,7 @@ def build_stix( input_dict ):
     stix_header.information_source.description = "Person who reported the breach"
 
     stix_header.information_source.time = Time()
-    stix_header.information_source.time.produced_time = datetime.strptime('2001-01-01', "%Y-%m-%d") # when they submitted it
+    stix_header.information_source.time.produced_time = datetime.strptime(input_dict['timestamp'], "%Y-%m-%d") # when they submitted it
 
     stix_header.information_source.identity = Identity()
     stix_header.information_source.identity.name = input_dict['submitter']
