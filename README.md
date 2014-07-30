@@ -17,6 +17,8 @@ mockingjay.init_db()
 Start server
 `./mockingjay.py`
 
+> By default, process listens on port 8080 
+
 ## Usage
 Create a new incident by filling form fields at:
 
