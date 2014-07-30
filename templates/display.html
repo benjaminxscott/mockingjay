@@ -13,7 +13,36 @@
 
 {% else %}
 
-<h2> Please describe the incident <h2>
+<body>
+
+    <div class="navbar navbar-inverse navbar-fixed-top" role="navigation">
+      <div class="container">
+        <div class="navbar-header">
+          <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
+            <span class="sr-only">Toggle navigation</span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+          </button>
+          <a class="navbar-brand" href="#">Breach Submission System</a>
+        </div>
+        <div class="collapse navbar-collapse">
+          <ul class="nav navbar-nav">
+            <li class="active"><a href="#">Home</a></li>
+            <li><a href="/about">About</a></li>
+          </ul>
+        </div><!--/.nav-collapse -->
+      </div>
+    </div>
+
+    <div class="container">
+
+        <p class="lead">----------------</p>
+      </div>
+
+    </div><!-- /.container -->
+
+  </body>
 
 <form method="POST" action="/breach/new" >
 <p>
@@ -21,18 +50,18 @@ What's your name? <input type="text" name="submitter" required> </input>
 </p>
 
 <p>
-How would you describe what happened? <input type="text" name="description" required> </input>
+How would you describe what happened? </br> <textarea maxlength = 100 rows="7" cols = "30" name="description" required> </textarea>
 </p>
 
 <p>
 What kind of damage did it cause?
  <select name="damage">
-<option value="Brand or Image Degradation">The victim looked dumb </option>
-<option value="Loss of Competitive Advantage">They lost business to others</option>
-<option value="Data Breach or Compromise" selected> Data was stolen</option>
+<option value="Brand or Image Degradation">It damaged their image </option>
+<option value="Loss of Competitive Advantage">They lost business to rivals </option>
+<option value="Data Breach or Compromise" selected> Their data was stolen</option>
 <option value="Regulatory, Compliance or Legal Impact">They might get sued</option>
 <option value="Financial Loss"> They lost money</option>
-<option value="Degradation of Service"> Their servers were down</option>
+<option value="Degradation of Service"> Their servers went down</option>
  </select>
 </p>
 
@@ -41,28 +70,27 @@ Who did it happen to?<input type="text" name="organization"required>
 </p>
 
 <p> When did it happen? 
-<input type="text" name="timestamp" title="YYYY-MM-DD" required pattern="\d{4}-\d{2}-\d{2}"> </input>
+<input type="date" name="timestamp"> </input>
 </p>
 
 
 <p>
-How sure are you?
+How confident is this assertion?
  <select name="confidence">
-<option value=Unknown>It's just a rumor</option>
-<option value=High>Completely<option>
-<option selected value=Medium>Pretty sure</option>
-<option value=Low>Not really</option>
+<option value=High>Very Confident<option>
+<option selected value=Medium>Sorta Confident</option>
+<option value=Low>Not Confident</option>
+<option value=Unknown>Just a rumor</option>
  </select>
 </p>
 
 <p>
  Is this information sensitive?
-<input type="checkbox" name="sensitive" value="True" checked >
+<input type="checkbox" name="sensitive" value="True" checked > (select if true)
  </input>
 </p>
 
 
-</br>
     <input type="submit" value="Submit">
 </form>
 
