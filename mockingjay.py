@@ -66,9 +66,6 @@ def close_db(error):
 # ----- APPLICATION LOGIC -----
 
 def store_breach():
-    if request.form['sensitive'] == "True":
-        print "ghosts"
-
     try:
         breach_id = insert_db("breaches", ("submitter",'description','damage','sensitive','organization','confidence','timestamp')
         , (
@@ -89,11 +86,13 @@ def store_breach():
 @app.route('/about')
 @app.route('/', alias = True)
 def landing():
-    return "Mockingjay says Hi!"
+    return "Unstable prototype for breach submission"
 
 @app.route('/breach/list')
 def list_breach():
-    return "show all breaches"
+    result = query_db('select * from breaches')
+
+    return render_template("display.html", is_results = True, output = result)
 
 @app.route('/breach/new', methods=['GET','POST'])
 def add_breach():
