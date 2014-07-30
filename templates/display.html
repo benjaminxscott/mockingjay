@@ -41,6 +41,11 @@
 <p><a href = {{url_for('produce_stix', breach_id=breach_id ,_external = True)}} > See the STIX version here</a> </p>
 
 
+{% elif about %}
+<title>About Us </title>
+
+<p>Project created by Ben Schmoker <a href='http://github.com/bschmoker'>Follow him on Github</a> </p>
+
 {% elif is_results %}
 <title>Victim List </title>
 <table width = "200px">

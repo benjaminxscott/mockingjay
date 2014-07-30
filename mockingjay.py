@@ -84,9 +84,8 @@ def store_breach():
 
 # ----- URL ROUTING -----
 @app.route('/about')
-@app.route('/', alias = True)
 def landing():
-    return "Unstable prototype for breach submission"
+    return render_template("display.html", about = True)
 
 @app.route('/breach/list')
 def list_breach():
@@ -95,6 +94,7 @@ def list_breach():
     return render_template("display.html", is_results = True, output = result)
 
 @app.route('/breach/new', methods=['GET','POST'])
+@app.route('/', alias = True)
 def add_breach():
     # present input form or parse incoming POST data
     if request.method == 'POST':
