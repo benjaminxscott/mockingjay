@@ -67,13 +67,14 @@ def close_db(error):
 
 def store_breach():
     try:
-        breach_id = insert_db("breaches", ("submitter",'description','damage','sensitive','organization','confidence','timestamp')
+        breach_id = insert_db("breaches", ("asset", "submitter",'description','damage','sensitive','organization','confidence','timestamp')
         , (
-          request.form['submitter'] # who is posting this - text
+          request.form['asset'] # what did they steal - text
+        , request.form['submitter'] # who is posting this - text
         , request.form['description'] # what happened - text
         , request.form['damage'] # what did it impact - text
         , request.form['sensitive'] # is it secretive - boolean
-        , request.form['organization'] # who are they - text 
+        , request.form['organization'] # who was the victim - text 
         , request.form['confidence'] # how sure are they - high/med/low/unknown
         , request.form['timestamp'] # when they submitted it - Y/m/d
         ))

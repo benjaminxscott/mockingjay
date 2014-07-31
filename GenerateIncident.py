@@ -6,7 +6,7 @@ from stix.core import STIXPackage, STIXHeader
 from datetime import datetime
 from cybox.common import Time
 
-from stix.incident import Incident,ImpactAssessment
+from stix.incident import Incident,ImpactAssessment, AffectedAsset
 from stix.incident import Time as incidentTime # different type than common:Time
 
 from stix.common import InformationSource
@@ -60,11 +60,13 @@ def build_stix( input_dict ):
     impact.add_effect(input_dict['damage'])
     breach.impact_assessment = impact
 
-    #XXX Add the thing that was stolen
-#    jewels = AffectedAsset()
-#    jewels.type_ = input_dict['asset']
-#    breach.add_affected_asset (jewels) 
-#    breach.add_victim (input_dict['organization'])
+    #Add the thing that was stolen
+    jewels = AffectedAsset()
+    jewels.type_ = input_dict['asset']
+    breach.add_affected_asset (jewels) 
+
+    # add the victim
+    breach.add_victim (input_dict['organization'])
 
     stix_package.add_incident(breach)
 
