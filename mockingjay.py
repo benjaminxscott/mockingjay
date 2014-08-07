@@ -1,12 +1,14 @@
 #!/usr/bin/env python
 
 import os
-from flask import Flask, request, url_for, render_template, g, abort # 'g' is a magical database thingie
+from flask import make_response, Flask, request, url_for, render_template, g, abort # 'g' is a magical database thingie
 from sqlite3 import dbapi2 as sqlite3
 from sqlite3 import IntegrityError
 
 from stix.core import STIXPackage
 import GenerateIncident 
+
+import libtaxii.messages_11 as tm11
 
 app = Flask(__name__)
 app.config.update(dict(
@@ -89,10 +91,10 @@ def landing():
     return render_template("display.html", about = True)
 
 @app.route('/breach/list')
-def list_breach():
+def list_breaches():
     result = query_db('select * from breaches')
 
-    return render_template("display.html", is_results = True, output = result)
+    return render_template("display.html", show_all = True, output = result)
 
 @app.route('/breach/new', methods=['GET','POST'])
 @app.route('/', alias = True)
@@ -103,13 +105,14 @@ def add_breach():
         if breach_id is None:
             abort(400)
         else:
+            # success msg and link to tracking 
             return render_template("display.html",breach_id=breach_id)
     
     return render_template("display.html")
 
 
-@app.route('/breach/<int:breach_id>/stix')
-def produce_stix(breach_id):
+@app.route('/breach/<int:breach_id>')
+def breach_results(breach_id):
     result = query_db('select * from breaches where id = ?',
                 [breach_id], one=True)
 
@@ -117,7 +120,20 @@ def produce_stix(breach_id):
         abort(400) # kick error if no results
     else:
         pkg = GenerateIncident.build_stix(result)
-        return pkg.to_xml()
+        xmlpkg = pkg.to_xml()
+        print xmlpkg
+
+        fmt = request.args.get("format") 
+        if fmt == "stix":
+            # make them download the xml file
+            response = make_response(xmlpkg)
+            response.headers['Content-Disposition'] = 'attachment;' + " filename=stix_breach-" + str(breach_id) + ".xml"
+            response.headers['Content-Type'] = 'application/xml'
+            return response
+
+    return render_template("display.html", show_one = True, output = result)
+
 
 if __name__ == '__main__':
+   app.debug = "True"
    app.run(host='0.0.0.0', port=8080)

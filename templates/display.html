@@ -35,10 +35,14 @@
 </br>
 {% if breach_id %}
 <title>Success </title>
-<h1>Thanks for your submission!
+<h1>Top men are on the case. 
 </h1>
 
-<p><a href = {{url_for('produce_stix', breach_id=breach_id ,_external = True)}} > See the STIX version here</a> </p>
+<h2>
+Refer to 
+<a href = {{url_for('breach_results', breach_id=breach_id ,_external = True)}} > this link</a> 
+to track the status of your submission 
+</h2>
 
 
 {% elif about %}
@@ -46,21 +50,37 @@
 
 <p>Project created by Ben Schmoker <a href='http://github.com/bschmoker'>Follow him on Github</a> </p>
 
-{% elif is_results %}
-<title>Victim List </title>
-<table width = "200px">
+{% elif show_all %}
+<title>Breach Details </title>
+<table width = "500px">
+<tr>
+    <th> ID </th>
+    <th> Timestamp </th>
+    <th> Type of Breach </th>
+</tr>
+{% for row in output %}
+    <tr>
+      <td>{{ row[0]}}</td> 
+      <td>{{ row[6]}}</td> 
+      <td>{{ row[7]}}</td> 
+    </tr>
+{% endfor %}
+</table>
+</br>
+
+{% elif show_one %}
+<title>Breach Details </title>
+<table width = "500px">
 <tr>
     <th> ID </th>
     <th> Affected Organization </th>
     <th> STIX Output </th>
 </tr>
-{% for row in output %}
     <tr>
-      <td>{{ row[0]}}</td> 
-      <td>{{ row[5]}}</td> 
-      <td><a href = {{url_for('produce_stix', breach_id=row[0],_external = True)}}> Link </a></td> 
+      <td>{{ output[0]}}</td> 
+      <td>{{ output[5]}}</td> 
+      <td><a href = {{url_for('breach_results', breach_id=output[0] ,_external = True, format="stix")}} > download</a> </td>
     </tr>
-{% endfor %}
 </table>
 </br>
 
