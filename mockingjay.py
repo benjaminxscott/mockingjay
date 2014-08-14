@@ -120,7 +120,6 @@ def breach_results(breach_id):
     else:
         pkg = GenerateIncident.build_stix(result)
         xmlpkg = pkg.to_xml()
-        print xmlpkg
 
         fmt = request.args.get("format") 
         if fmt == "stix":
