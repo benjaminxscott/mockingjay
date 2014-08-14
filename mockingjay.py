@@ -8,7 +8,6 @@ from sqlite3 import IntegrityError
 from stix.core import STIXPackage
 import GenerateIncident 
 
-import libtaxii.messages_11 as tm11
 
 app = Flask(__name__)
 app.config.update(dict(
