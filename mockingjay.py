@@ -4,6 +4,7 @@ import os
 from flask import make_response, Flask, request, url_for, render_template, g, abort # 'g' is a magical database thingie
 from sqlite3 import dbapi2 as sqlite3
 from sqlite3 import IntegrityError
+from datetime import datetime
 
 from stix.core import STIXPackage
 import GenerateIncident 
@@ -67,8 +68,22 @@ def close_db(error):
 # ----- APPLICATION LOGIC -----
 
 def store_breach():
+    # derive priority from attribs
+    # lower = more urgent
+    pri = 5 #least important
+    if request.form['confidence']  == "High":
+        pri = pri -1
+
+    if request.form['sensitive'] :
+        pri = pri -1
+
+    td =  datetime.today() -datetime.strptime( request.form['timestamp'],"%Y-%m-%d" ) 
+    if td.days <= 90: #if happened in last three months
+        pri = pri -1
+
+    # add to DB
     try:
-        breach_id = insert_db("breaches", ("asset", "submitter",'description','damage','sensitive','organization','confidence','timestamp')
+        breach_id = insert_db("breaches", ("asset", "submitter",'description','damage','sensitive','organization','confidence','timestamp', 'priority')
         , (
           request.form['asset'] # what did they steal - text
         , request.form['submitter'] # who is posting this - text
@@ -78,6 +93,7 @@ def store_breach():
         , request.form['organization'] # who was the victim - text 
         , request.form['confidence'] # how sure are they - high/med/low/unknown
         , request.form['timestamp'] # when they submitted it - Y/m/d
+        , pri #priority
         ))
     except IntegrityError:
         breach_id = None

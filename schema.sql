@@ -8,5 +8,6 @@ create table breaches (
   organization text not null,
   timestamp text not null,
   damage text not null,
+  priority integer not null,
   asset text not null
 );
