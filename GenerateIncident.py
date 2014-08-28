@@ -33,22 +33,22 @@ def build_stix( input_dict ):
         stix_header.handling = Marking(mark_spec)
 
 
-    # stamp with creator
-    stix_header.information_source = InformationSource()
-    stix_header.information_source.description = "Person who reported the breach"
-
-    stix_header.information_source.time = Time()
-    stix_header.information_source.time.produced_time = datetime.strptime(input_dict['timestamp'], "%Y-%m-%d") # when they submitted it
-
-    stix_header.information_source.identity = Identity()
-    stix_header.information_source.identity.name = input_dict['submitter']
-
     stix_package.stix_header = stix_header
 
     # add incident and confidence
     breach = Incident()
     breach.description = input_dict['description']
     breach.confidence = input_dict['confidence']
+
+    # add incident reporter
+    breach.reporter = InformationSource()
+    breach.reporter.description = "Person who reported the breach"
+
+    breach.reporter.time = Time()
+    breach.reporter.time.produced_time = datetime.strptime(input_dict['timestamp'], "%Y-%m-%d") # when they submitted it
+
+    breach.reporter.identity = Identity()
+    breach.reporter.identity.name = input_dict['submitter']
 
     # incident time is a complex object with support for a bunch of different "when stuff happened" items
     breach.time = incidentTime()
