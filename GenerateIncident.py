@@ -25,7 +25,7 @@ def build_stix( input_dict ):
     stix_header.add_package_intent ("Incident")
 
     # Add handling requirements if needed
-    if input_dict['sensitive'] == "True": #stupid boolean sql grumble
+    if input_dict['sensitive'] == "True": 
         mark = SimpleMarkingStructure()
         mark.statement = "Sensitive"
         mark_spec = MarkingSpecification()
