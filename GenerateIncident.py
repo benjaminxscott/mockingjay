@@ -1,6 +1,7 @@
 #!/usr/bin/env python
 
 import stix
+import stix_edh
 
 from stix.core import STIXPackage, STIXHeader
 from datetime import datetime
@@ -25,7 +26,7 @@ def build_stix( input_dict ):
     stix_header.add_package_intent ("Incident")
 
     # Add handling requirements if needed
-    if input_dict['sensitive'] == "True": 
+    if input_dict['sensitive'] == "True":
         mark = SimpleMarkingStructure()
         mark.statement = "Sensitive"
         mark_spec = MarkingSpecification()
@@ -63,7 +64,7 @@ def build_stix( input_dict ):
     #Add the thing that was stolen
     jewels = AffectedAsset()
     jewels.type_ = input_dict['asset']
-    breach.add_affected_asset (jewels) 
+    breach.add_affected_asset (jewels)
 
     # add the victim
     breach.add_victim (input_dict['organization'])
@@ -75,4 +76,4 @@ def build_stix( input_dict ):
 if __name__ == '__main__':
     # emit STIX
     pkg = build_stix()
-    print pkg.to_xml() 
+    print pkg.to_xml()
