@@ -9,6 +9,11 @@ import stix_edh
 from stix.core import STIXPackage
 import GenerateIncident
 
+app = Flask(__name__)
+app.config.update(dict(
+    DATABASE=os.path.join(app.root_path, 'mockingjay.db')
+    ))
+
 # ----- APPLICATION LOGIC -----
 
 def store_breach():
