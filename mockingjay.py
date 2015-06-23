@@ -7,7 +7,7 @@ import stix
 import stix_edh
 
 from stix.core import STIXPackage
-import GenerateIncident
+import generators.generateIncident
 
 app = Flask(__name__)
 app.config.update(dict(
