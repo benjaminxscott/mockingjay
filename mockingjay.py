@@ -7,7 +7,7 @@ import stix
 import stix_edh
 
 from stix.core import STIXPackage
-import generators.generateIncident
+from generators import generateIncident
 
 app = Flask(__name__)
 app.config.update(dict(
@@ -17,6 +17,7 @@ app.config.update(dict(
 # ----- APPLICATION LOGIC -----
 
 def store_incident():
+    print "/////////////////////////////"
     # derive priority from attribs
     # lower = more urgent
     pri = 5 #least important
@@ -32,17 +33,24 @@ def store_incident():
 
     # add to DB
     try:
-        incident_id = insert_db("incidents", ("asset", "submitter",'description','damage','sensitive','organization','confidence','timestamp', 'priority')
+        incident_id = insert_db("incidents", ("asset", "responder", "coordinator", "status",
+                                              "submitter", "intent", "discovery", "description","damage",
+                                              "sensitive", "organization", "confidence", "timestamp", "priority")
         , (
-          request.form['asset'] # what did they steal - text
-        , request.form['submitter'] # who is posting this - text
-        , request.form['description'] # what happened - text
-        , request.form['damage'] # what did it impact - text
-        , request.form['sensitive'] # is it secretive - boolean
-        , request.form['organization'] # who was the victim - text
-        , request.form['confidence'] # how sure are they - high/med/low/unknown
-        , request.form['timestamp'] # when they submitted it - Y/m/d
-        , pri #priority
+           request.form['asset'],
+           request.form['responder'],
+           request.form['coordinator'],
+           request.form['status'],
+           request.form['submitter'],
+           request.form['intent'],
+           request.form['discovery'],
+           request.form['description'],
+           request.form['damage'],
+           request.form['sensitive'],
+           request.form['organization'],
+           request.form['confidence'],
+           request.form['timestamp'],
+           pri #priority
         ))
     except IntegrityError:
         incident_id = None
@@ -82,7 +90,7 @@ def incident_results(incident_id):
     if result is None:
         abort(400) # kick error if no results
     else:
-        pkg = GenerateIncident.build_stix(result)
+        pkg = generateIncident.build_stix(result)
         xmlpkg = pkg.to_xml()
 
         fmt = request.args.get("format")
