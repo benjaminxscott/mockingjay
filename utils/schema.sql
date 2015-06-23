@@ -1,5 +1,5 @@
-drop table if exists breaches;
-create table breaches (
+drop table if exists incidents;
+create table incidents (
   id integer primary key autoincrement,
   submitter text not null,
   description text not null,

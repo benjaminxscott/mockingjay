@@ -16,7 +16,7 @@ app.config.update(dict(
 
 # ----- APPLICATION LOGIC -----
 
-def store_breach():
+def store_incident():
     # derive priority from attribs
     # lower = more urgent
     pri = 5 #least important
@@ -32,7 +32,7 @@ def store_breach():
 
     # add to DB
     try:
-        breach_id = insert_db("breaches", ("asset", "submitter",'description','damage','sensitive','organization','confidence','timestamp', 'priority')
+        incident_id = insert_db("incidents", ("asset", "submitter",'description','damage','sensitive','organization','confidence','timestamp', 'priority')
         , (
           request.form['asset'] # what did they steal - text
         , request.form['submitter'] # who is posting this - text
@@ -45,39 +45,39 @@ def store_breach():
         , pri #priority
         ))
     except IntegrityError:
-        breach_id = None
+        incident_id = None
 
-    return breach_id
+    return incident_id
 
 # ----- URL ROUTING -----
 @app.route('/about')
 def landing():
     return render_template("about.html", about = True)
 
-@app.route('/breach/list')
-def list_breaches():
-    result = query_db('select * from breaches')
+@app.route('/incident/list')
+def list_incidents():
+    result = query_db('select * from incidents')
 
-    return render_template("breachList.html", show_all = True, output = result)
+    return render_template("incidentList.html", show_all = True, output = result)
 
-@app.route('/breach/new', methods=['GET','POST'])
+@app.route('/incident/new', methods=['GET','POST'])
 @app.route('/', alias = True)
-def add_breach():
+def add_incident():
     # present input form or parse incoming POST data
     if request.method == 'POST':
-        breach_id = store_breach()
-        if breach_id is None:
+        incident_id = store_incident()
+        if incident_id is None:
             abort(400)
         else:
             # success msg and link to tracking 
-            return render_template("breach.html",breach_id=breach_id)
+            return render_template("incident.html",incident_id=incident_id)
 
-    return render_template("breach.html")
+    return render_template("incident.html")
 
-@app.route('/breach/<int:breach_id>')
-def breach_results(breach_id):
-    result = query_db('select * from breaches where id = ?',
-                [breach_id], one=True)
+@app.route('/incident/<int:incident_id>')
+def incident_results(incident_id):
+    result = query_db('select * from incidents where id = ?',
+                [incident_id], one=True)
 
     if result is None:
         abort(400) # kick error if no results
@@ -89,11 +89,11 @@ def breach_results(breach_id):
         if fmt == "stix":
             # make them download the xml file
             response = make_response(xmlpkg)
-            response.headers['Content-Disposition'] = 'attachment;' + " filename=stix_breach-" + str(breach_id) + ".xml"
+            response.headers['Content-Disposition'] = 'attachment;' + " filename=stix_incident-" + str(incident_id) + ".xml"
             response.headers['Content-Type'] = 'application/xml'
             return response
 
-    return render_template("breachList.html", show_one = True, output = result)
+    return render_template("incidentList.html", show_one = True, output = result)
 
 
 if __name__ == '__main__':

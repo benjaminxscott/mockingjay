@@ -3,12 +3,12 @@
 <div class="container">
 
 {% if show_all %}
-<title>Breach Details </title>
+<title>Incident Details </title>
 <table width = "500px">
 <tr>
     <th> ID </th>
     <th> Timestamp </th>
-    <th> Type of Breach </th>
+    <th> Type of Incident </th>
     <th> Priority </th>
 </tr>
 {% for row in output %}
@@ -23,7 +23,7 @@
 </br>
 
 {% elif show_one %}
-<title>Breach Details </title>
+<title>Incident Details </title>
 <table width = "500px">
 <tr>
     <th> ID </th>
@@ -33,7 +33,7 @@
     <tr>
       <td>{{ output[0]}}</td>
       <td>{{ output[5]}}</td>
-      <td><a href = {{url_for('breach_results', breach_id=output[0] ,_external = True, format="stix")}} > download</a> </td>
+      <td><a href = {{url_for('incident_results', incident_id=output[0] ,_external = True, format="stix")}} > download</a> </td>
     </tr>
 </table>
 </br>

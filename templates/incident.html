@@ -1,0 +1,203 @@
+{% extends "layout.html" %}
+{% block body %}
+
+<div class="container">
+
+{% if incident_id %}
+    <title>Success </title>
+    <h1>Top men are on the case.
+    </h1>
+
+    <h2>
+        Refer to
+        <a href = {{url_for('incident_results', incident_id=incident_id ,_external = True)}} > this link</a>
+        to track the status of your submission
+    </h2>
+
+{% else %}
+
+    <title>Incident Submission </title>
+    <form method="POST" action="/incident/new" >
+        <table style="width:60%">
+        <tr>
+            <td>
+                <p><b>
+                    STIX Incident
+                </b></p>
+            </td>
+        </tr>
+            <tr>
+                <td>
+                    <p><b>
+                        Reporter
+                    </b></p>
+                </td>
+                <td>
+                    <p>
+                        Who is reporting the incident? <input type="text" name="submitter" required> </input>
+                    </p>
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    <p>
+                        Responder
+                    </p>
+                </td>
+                <td>
+                    <p>
+                        Who will be responding to this incident? <input type="text" name="responder"> </input>
+                    </p>
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    <p>
+                        Reporter
+                    </p>
+                </td>
+                <td>
+                    <p>
+                        Who will be coordinating the response <input type="text" name="coordinator"> </input>
+                    </p>
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    <p><b>
+                        Description
+                    </b></p>
+                </td>
+                <td>
+                    <p>
+                        How would you describe what happened? </br> <textarea maxlength = 100 rows="7" cols = "30" name="description" required> </textarea>
+                    </p>
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    <p>
+                        Status
+                    </p>
+                </td>
+                <td>
+                    <p>
+                        What is the current status of the incident? <input type="text" name="status"> </input>
+                    </p>
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    <p><b>
+                        Victim
+                    </b></p>
+                </td>
+                <td>
+                    <p>
+                        Who did it happen to? <input type="text" name="organization"required>
+                    </p>
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    <p>
+                        Affected Asset
+                    </p>
+                </td>
+                <td>
+                    <p>
+                    <!--# TODO handle if blank, default empty string or None?  -->
+                    What did they take (if anything) </br> <input type="text" name="asset" > </input>
+                    </p>
+                </td
+            </tr>
+            <tr>
+                <td>
+                    <p><b>
+                        Impact Assessment:Effects
+                    </b></p>
+                </td>
+                <td>
+                    <p>
+                        What kind of damage did it cause?
+                         <select name="damage">
+                            <option value="Brand or Image Degradation">It damaged their image </option>
+                            <option value="Loss of Competitive Advantage">They lost business to rivals </option>
+                            <option value="Data Breach or Compromise" selected> Their data was stolen</option>
+                            <option value="Regulatory, Compliance or Legal Impact">They might get sued</option>
+                            <option value="Financial Loss"> They lost money</option>
+                            <option value="Degradation of Service"> Their servers went down</option>
+                         </select>
+                    </p>
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    <p>
+                        Intended Effect
+                    </p>
+                </td>
+                <td>
+                    <p>
+                        What did the threat intend to do? <input type="text" name="intent"> </input>
+                    </p>
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    <p><b>
+                        Time
+                    </b></p>
+                </td>
+                <td>
+                    <p> When did it happen? 
+                        <input type="date" name="timestamp" required> </input>
+                    </p>
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    <p><b>
+                        Confidence
+                    </b></p>
+                </td>
+                <td>
+                    <p>
+                        How confident is the assertion?
+                         <select name="confidence">
+                            <option value=High>Very Confident<option>
+                            <option selected value=Medium>Sorta Confident</option>
+                            <option value=Low>Not Confident</option>
+                            <option value=Unknown>Just a rumor</option>
+                         </select>
+                    </p>
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    <p><b>
+                        Marking
+                    </b></p>
+                </td>
+                <td>
+                    <p>
+                        Is this information sensitive?
+                        <input type="hidden" value="False" name="sensitive" />
+                        <input type="checkbox" name="sensitive" value="True" checked > (select if true)</input>
+                    </p>
+                </td>
+            </tr>
+            <tr>
+                <td>
+                </td>
+                <td>
+                    <input type="submit" value="Submit">
+                </td>
+            </tr>
+        </table>
+    </form>
+
+{% endif %}
+
+</div><!-- /.container -->
+{% endblock %}
