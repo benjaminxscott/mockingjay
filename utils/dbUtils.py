@@ -1,6 +1,6 @@
 from sqlite3 import dbapi2 as sqlite3
 from sqlite3 import IntegrityError
-from flask import make_response, Flask, request, url_for, render_template, g, abort # 'g' is a magical database thingie
+from flask import Flask, g 
 import os
 
 app = Flask(__name__)

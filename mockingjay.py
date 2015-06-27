@@ -2,22 +2,17 @@
 
 import os
 from datetime import datetime
-from utils.dbUtils import *
-import stix
-import stix_edh
+from flask import make_response, Flask, request, url_for, render_template, abort 
 
 from stix.core import STIXPackage
 from generators import generateIncident
+from utils.dbUtils import *
 
 app = Flask(__name__)
-app.config.update(dict(
-    DATABASE=os.path.join(app.root_path, 'mockingjay.db')
-    ))
 
 # ----- APPLICATION LOGIC -----
 
 def store_incident():
-    print "/////////////////////////////"
     # derive priority from attribs
     # lower = more urgent
     pri = 5 #least important

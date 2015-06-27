@@ -1,7 +1,6 @@
 #!/usr/bin/env python
 
 import stix
-import stix_edh
 
 from stix.core import STIXPackage, STIXHeader
 from datetime import datetime
